@@ -130,7 +130,7 @@ int main()
     
     //Probar precendecia**
     //esta funcion le va a servir para validar la precedencia de los operadores durante la
-    //ejecucion de la operacion
+    //ejecucion de la operacion +
     bool precedencia = esPrecedente("^", "-");
     if (precedencia) {
         cout << "Tiene precedencia";
