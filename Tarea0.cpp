@@ -28,7 +28,7 @@ void eliminarEspaciosBlancos(string& expresion) {
 }
 
 string obtenerToken(string& expresion) {
-    string token="";
+    string token = "";
     for (int i = 0; i < expresion.length(); i++) {
         if (!isdigit(expresion[i])) {
             if (token == "") {
@@ -53,28 +53,61 @@ string obtenerTipoToken(string token) {
     return "numero";
 }
 
-int obtenerValorPrecendencia(string token) {
-    if (token == "+" || token == "-") {
+int obtenerValorPrecendencia(char token) {
+    if (token == '+' || token == '-') {
         return 1;
     }
-    else if (token == "*" || token == "/") {
+    else if (token == '*' || token == '/') {
         return 2;
     }
-    else if (token == "^") {
+    else if (token == '^') {
         return 3;
+    }
+    else if (token == ')') {
+        return 0;
     }
     return 0;
 }
 
-bool esPrecedente(string tokenAnterior, string tokenSiguiente) {
-    int valorTokenAnterior = obtenerValorPrecendencia(tokenAnterior);
-    int valorTokenSiguiente = obtenerValorPrecendencia(tokenSiguiente);
+//bool esPrecedente(string tokenAnterior, string tokenSiguiente) {
+ //   int valorTokenAnterior = obtenerValorPrecendencia(tokenAnterior);
+  //  int valorTokenSiguiente = obtenerValorPrecendencia(tokenSiguiente);
 
-    if (valorTokenSiguiente >= valorTokenAnterior) {
-        return true;
+  //  if (valorTokenSiguiente >= valorTokenAnterior) {
+  //      return true;
+   // }
+
+ //   return false;
+//}
+
+double operaciones(char operador, double x, double y){
+
+    double result = 0;
+    cout << x << operador << y << "= ";
+
+    switch (operador)
+    {
+    case '+':
+        result = x + y;
+        break;
+    case '-':
+        result = x - y;
+        break;
+    case '*':
+        result = x * y;
+        break;
+    case '/':
+        result = x / y;
+        break;
+    case '^':
+        result = pow(x, y);
+        break;
+
+        return result;
+
+
     }
 
-    return false;
 }
 
 int main()
@@ -105,7 +138,7 @@ int main()
     cout << "Escriba la expresión a evaluar: ";
     getline(cin, expresion);
 
-    
+
 
     //Eliminar los espacios en blanco
     eliminarEspaciosBlancos(expresion);
@@ -115,33 +148,106 @@ int main()
         //Obtener token
         string token;
         token = obtenerToken(expresion);
-        
+
         string tipoToken = obtenerTipoToken(token);
         cout << "Token " + token + " tipo " + tipoToken + "\n";
-        
+
+        if (tipoToken == "numero") {
+            double numero = stoi(token);
+            pilaNumeros->push(numero);
+            cout << "Valor de Pila Numeros: [ " << pilaNumeros->topValue() << " ]" << "\n";
+
+        }
+        else {
+            char operador = token[0];
+
+            while (!pilaOperadores->isEmpty()) {
+
+                if (operador == '(') {
+                    pilaOperadores->push(operador);
+                    cout << "Valor de Pila Operadores: [ " << pilaOperadores->topValue() << " ]" << "\n";
+
+                }
+
+                if (operador == ')' && pilaOperadores->topValue() != '(') {
+
+                    double peo = operaciones(pilaOperadores->pop(), pilaNumeros->pop(), pilaNumeros->pop());
+                    cout << peo;
+                    pilaNumeros->push(peo);
+                    if (pilaOperadores->topValue() == '(') {
+                        pilaOperadores->pop();
+                    }
+                    cout << "Valor de Pila Numeros: [ " << pilaNumeros->topValue() << " ]" << "\n";
+                    break;
+                    
+                }
+                else if (operador == ')' && pilaOperadores->topValue() == '(') {
+                    pilaOperadores->pop();
+                }
+                
+                if (obtenerValorPrecendencia(pilaOperadores->topValue()) >= obtenerValorPrecendencia(operador) && operador != '(' && operador != ')') {
+                    
+                    double peo = operaciones(pilaOperadores->pop(), pilaNumeros->pop(), pilaNumeros->pop());
+                    cout << peo;
+                    pilaNumeros->push(peo);
+                    pilaOperadores->push(operador);
+                    cout << "Valor de Pila Numeros: [ " << pilaNumeros->topValue() << " ]" << "\n";
+                    break;
+
+                }
+
+                else {
+                    if (operador != ')') {
+                        pilaOperadores->push(operador);
+                        break;
+
+                    }
+                    break;
+                }
+            }
+
+            if (pilaOperadores->isEmpty()) {
+                pilaOperadores->push(operador);
+            }
+
+            cout << "Valor de Pila Operadores: [ " << pilaOperadores->topValue() << " ]" << "\n";
+
+        }
+    }
+
+    while (!pilaOperadores->isEmpty()) {
+        cout << "Valor de Pila Operadores FINAL: [ " << pilaOperadores->topValue() << " ]" << "\n";
+
+        if (pilaOperadores->topValue() == '(') {
+            pilaOperadores->pop();
+        }
+        else if (pilaOperadores->topValue() == ')') {
+            pilaOperadores->pop();
+        }
+        else {
+            double peo = operaciones(pilaOperadores->pop(), pilaNumeros->pop(), pilaNumeros->pop());
+            cout << peo;
+            pilaNumeros->push(peo);
+        }
+
+    }
+
         //Agregar una validacion para verificar que sea una expresion valida**
-        
-               
+
+
         //Cuando se realiza el llenado de los arreglos tomar en cuenta que si es de
         //tipo ArrayStack este se crea de tamaño 5 y si se llena se debe de crear un 
         //nuevo arreglo del doble del tamaño y mover todos los elementos del arreglo
         //anterior al arreglo nuevo. Recordar destruir el arreglo anterior.
-    }
     
+
     //Probar precendecia**
     //esta funcion le va a servir para validar la precedencia de los operadores durante la
     //ejecucion de la operacion +
-    bool precedencia = esPrecedente("^", "-");
-    if (precedencia) {
-        cout << "Tiene precedencia";
-    }
-    else {
-        cout << "No tiene precedencia";
-    }
 
     return 0;
 
-} 
+}
 
 
 
