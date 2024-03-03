@@ -1,5 +1,5 @@
-// Tarea0.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+// Tarea0.cpp 
+// Amanda Ramírez y Mariana Torres
 
 #include <iostream>
 #include <cstdlib>
@@ -69,21 +69,10 @@ int obtenerValorPrecendencia(char token) {
     return 0;
 }
 
-//bool esPrecedente(string tokenAnterior, string tokenSiguiente) {
- //   int valorTokenAnterior = obtenerValorPrecendencia(tokenAnterior);
-  //  int valorTokenSiguiente = obtenerValorPrecendencia(tokenSiguiente);
-
-  //  if (valorTokenSiguiente >= valorTokenAnterior) {
-  //      return true;
-   // }
-
- //   return false;
-//}
-
 double operaciones(char operador, double x, double y){
 
     double result = 0;
-    cout << x << operador << y << "= ";
+    cout << "Resultado: " << x << operador << y << "= ";
 
     switch (operador)
     {
@@ -110,13 +99,13 @@ double operaciones(char operador, double x, double y){
 
 }
 
-int main()
-{
+int main() {
     setlocale(LC_ALL, "spanish"); // para evitar errores en las tildes
 
-    string tipoPila;
-    cout << "Indique el tipo de pila que desea utilizar (1- LinkedStack 2- ArrayStack): ";
-    getline(cin, tipoPila);
+    try {
+        string tipoPila;
+        cout << "Indique el tipo de pila que desea utilizar (1- LinkedStack 2- ArrayStack): ";
+        getline(cin, tipoPila);
 
     //Agregar una validacion del valor ingresado por el usuario***
 
@@ -128,9 +117,13 @@ int main()
         pilaOperadores = new LinkedStack<char>();
         pilaNumeros = new LinkedStack<double>();
     }
-    else {
+    else if (tipoPila == "2") {
         pilaOperadores = new ArrayStack<char>(5);
         pilaNumeros = new ArrayStack<double>(5);
+    }
+
+    else {
+        cout << "\nExpresión no válida" << endl;
     }
 
     //Recibimos la expresion
@@ -177,6 +170,7 @@ int main()
                     if (pilaOperadores->topValue() == '(') {
                         pilaOperadores->pop();
                     }
+                    cout << "\n";
                     cout << "Valor de Pila Numeros: [ " << pilaNumeros->topValue() << " ]" << "\n";
                     break;
                     
@@ -191,6 +185,7 @@ int main()
                     cout << peo;
                     pilaNumeros->push(peo);
                     pilaOperadores->push(operador);
+                    cout << "\n";
                     cout << "Valor de Pila Numeros: [ " << pilaNumeros->topValue() << " ]" << "\n";
                     break;
 
@@ -208,7 +203,7 @@ int main()
 
             if (pilaOperadores->isEmpty()) {
                 pilaOperadores->push(operador);
-            }
+            } 
 
             cout << "Valor de Pila Operadores: [ " << pilaOperadores->topValue() << " ]" << "\n";
 
@@ -216,7 +211,7 @@ int main()
     }
 
     while (!pilaOperadores->isEmpty()) {
-        cout << "Valor de Pila Operadores FINAL: [ " << pilaOperadores->topValue() << " ]" << "\n";
+        // cout << "Valor de Pila Operadores FINAL: [ " << pilaOperadores->topValue() << " ]" << "\n"; 
 
         if (pilaOperadores->topValue() == '(') {
             pilaOperadores->pop();
@@ -232,21 +227,12 @@ int main()
 
     }
 
-        //Agregar una validacion para verificar que sea una expresion valida**
-
-
-        //Cuando se realiza el llenado de los arreglos tomar en cuenta que si es de
-        //tipo ArrayStack este se crea de tamaño 5 y si se llena se debe de crear un 
-        //nuevo arreglo del doble del tamaño y mover todos los elementos del arreglo
-        //anterior al arreglo nuevo. Recordar destruir el arreglo anterior.
-    
-
-    //Probar precendecia**
-    //esta funcion le va a servir para validar la precedencia de los operadores durante la
-    //ejecucion de la operacion +
+    }
+    catch (...) {
+        cout << "\nHay un error en la expresión" << endl;
+    }
 
     return 0;
-
 }
 
 
