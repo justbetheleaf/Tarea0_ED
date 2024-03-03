@@ -211,7 +211,7 @@ int main() {
     }
 
     while (!pilaOperadores->isEmpty()) {
-        // cout << "Valor de Pila Operadores FINAL: [ " << pilaOperadores->topValue() << " ]" << "\n"; 
+        cout << "\n" << "Valor de Pila Operadores FINAL: [ " << pilaOperadores->topValue() << " ]" << "\n";
 
         if (pilaOperadores->topValue() == '(') {
             pilaOperadores->pop();
