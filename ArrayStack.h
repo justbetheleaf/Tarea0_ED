@@ -29,7 +29,23 @@ public:
 	}
 	void push(E element) {
 		if (top == max) {
-			throw runtime_error("Stack overflow.");
+			
+			//Crear un arreglo del doble del tamaño
+			E* nuevaPila = new E[max * 2];
+			
+			//Copiar los elementos del viejo arreglo al nuevo.
+			for (int i = 0; i < top; ++i) {
+				nuevaPila[i] = elements[i];  // Paso 2: Copiar elementos del viejo arreglo al nuevo
+			}
+
+			//Eliminar el arreglo viejo de la memoria.
+			delete elements;
+
+			//Hacer que el atributo elements apunte al nuevo arreglo.
+			elements = nuevaPila;
+
+			//Hacer que el atributo max valga el doble.
+			max = max * 2;
 		}
 		elements[top] = element;
 		top++;
@@ -58,7 +74,7 @@ public:
 	}
 	void print() {
 		cout << "[ ";
-		for (int i = top - 1; i >= 0; i--) {
+		for (int i = 0; i <= top - 1; i++) {
 			cout << elements[i] << " ";
 		}
 		cout << "]" << endl;

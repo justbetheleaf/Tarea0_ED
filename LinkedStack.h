@@ -56,14 +56,17 @@ public:
 	}
 	int getSize() {
 		return size;
+	}	
+	void print(Node<E>* node) {
+		if (node == nullptr) {
+			return;
+		}
+		print(node->next);
+		cout << node->element << " ";
 	}
 	void print() {
-		Node<E>* temp = top;
 		cout << "[ ";
-		while (temp != nullptr) {
-			cout << temp->element << " ";
-			temp = temp->next;
-		}
+		print(top);
 		cout << "]" << endl;
 	}
 };

@@ -107,125 +107,136 @@ int main() {
         cout << "Indique el tipo de pila que desea utilizar (1- LinkedStack 2- ArrayStack): ";
         getline(cin, tipoPila);
 
-    //Agregar una validacion del valor ingresado por el usuario***
+        //Agregar una validacion del valor ingresado por el usuario***
 
-    //Dependinedo del tipo de pila seleccionado se crea el objeto
-    Stack<char>* pilaOperadores{};
-    Stack<double>* pilaNumeros{};
-    if (tipoPila == "1")
-    {
-        pilaOperadores = new LinkedStack<char>();
-        pilaNumeros = new LinkedStack<double>();
-    }
-    else if (tipoPila == "2") {
-        pilaOperadores = new ArrayStack<char>(5);
-        pilaNumeros = new ArrayStack<double>(5);
-    }
-
-    else {
-        cout << "\nExpresión no válida" << endl;
-    }
-
-    //Recibimos la expresion
-    string expresion;
-    cout << "Escriba la expresión a evaluar: ";
-    getline(cin, expresion);
-
-
-
-    //Eliminar los espacios en blanco
-    eliminarEspaciosBlancos(expresion);
-
-    //Recorre la expresion
-    while (expresion.length() > 0) {
-        //Obtener token
-        string token;
-        token = obtenerToken(expresion);
-
-        string tipoToken = obtenerTipoToken(token);
-        cout << "Token " + token + " tipo " + tipoToken + "\n";
-
-        if (tipoToken == "numero") {
-            double numero = stoi(token);
-            pilaNumeros->push(numero);
-            cout << "Valor de Pila Numeros: [ " << pilaNumeros->topValue() << " ]" << "\n";
-
+        //Dependinedo del tipo de pila seleccionado se crea el objeto
+        Stack<char>* pilaOperadores{};
+        Stack<double>* pilaNumeros{};
+        if (tipoPila == "1")
+        {
+            pilaOperadores = new LinkedStack<char>();
+            pilaNumeros = new LinkedStack<double>();
         }
+        else if (tipoPila == "2") {
+            pilaOperadores = new ArrayStack<char>(5);
+            pilaNumeros = new ArrayStack<double>(5);
+        }
+
         else {
-            char operador = token[0];
+            cout << "\nExpresión no válida" << endl;
+        }
 
-            while (!pilaOperadores->isEmpty()) {
+        //Recibimos la expresion
+        string expresion;
+        cout << "Escriba la expresión a evaluar: ";
+        getline(cin, expresion);
 
-                if (operador == '(') {
-                    pilaOperadores->push(operador);
-                    cout << "Valor de Pila Operadores: [ " << pilaOperadores->topValue() << " ]" << "\n";
 
-                }
 
-                if (operador == ')' && pilaOperadores->topValue() != '(') {
+        //Eliminar los espacios en blanco
+        eliminarEspaciosBlancos(expresion);
 
-                    double peo = operaciones(pilaOperadores->pop(), pilaNumeros->pop(), pilaNumeros->pop());
-                    cout << peo;
-                    pilaNumeros->push(peo);
-                    if (pilaOperadores->topValue() == '(') {
+        //Recorre la expresion
+        while (expresion.length() > 0) {
+            //Obtener token
+            string token;
+            token = obtenerToken(expresion);
+
+            string tipoToken = obtenerTipoToken(token);
+            cout << "Token " + token + " tipo " + tipoToken + "\n";
+
+            if (tipoToken == "numero") {
+                double numero = stoi(token);
+                pilaNumeros->push(numero);
+                cout << "Valor de  Pila Numeros: ";
+                pilaNumeros->print();
+                cout << "\n";
+
+            }
+            else {
+                char operador = token[0];
+
+                while (!pilaOperadores->isEmpty()) {
+
+                    if (operador == '(') {
+                        pilaOperadores->push(operador);
+                        cout << "Valor de Pila Operadores: ";
+                        pilaOperadores->print();
+                        cout << "\n";
+
+                    }
+
+                    if (operador == ')' && pilaOperadores->topValue() != '(') {
+
+                        double peo = operaciones(pilaOperadores->pop(), pilaNumeros->pop(), pilaNumeros->pop());
+                        cout << peo;
+                        pilaNumeros->push(peo);
+                        if (pilaOperadores->topValue() == '(') {
+                            pilaOperadores->pop();
+                        }
+                        cout << "\n";
+                        cout << "Valor de  Pila Numeros: ";
+                        pilaNumeros->print();
+                        cout << "\n";
+                        break;
+                    
+                    }
+                    else if (operador == ')' && pilaOperadores->topValue() == '(') {
                         pilaOperadores->pop();
                     }
-                    cout << "\n";
-                    cout << "Valor de Pila Numeros: [ " << pilaNumeros->topValue() << " ]" << "\n";
-                    break;
-                    
-                }
-                else if (operador == ')' && pilaOperadores->topValue() == '(') {
-                    pilaOperadores->pop();
-                }
                 
-                if (obtenerValorPrecendencia(pilaOperadores->topValue()) >= obtenerValorPrecendencia(operador) && operador != '(' && operador != ')') {
+                    if (obtenerValorPrecendencia(pilaOperadores->topValue()) >= obtenerValorPrecendencia(operador) && operador != '(' && operador != ')') {
                     
-                    double peo = operaciones(pilaOperadores->pop(), pilaNumeros->pop(), pilaNumeros->pop());
-                    cout << peo;
-                    pilaNumeros->push(peo);
-                    pilaOperadores->push(operador);
-                    cout << "\n";
-                    cout << "Valor de Pila Numeros: [ " << pilaNumeros->topValue() << " ]" << "\n";
-                    break;
-
-                }
-
-                else {
-                    if (operador != ')') {
+                        double peo = operaciones(pilaOperadores->pop(), pilaNumeros->pop(), pilaNumeros->pop());
+                        cout << peo;
+                        pilaNumeros->push(peo);
                         pilaOperadores->push(operador);
+                        cout << "\n";
+                        cout << "Valor de  Pila Numeros: ";
+                        pilaNumeros->print();
+                        cout << "\n";
                         break;
 
                     }
-                    break;
+
+                    else {
+                        if (operador != ')') {
+                            pilaOperadores->push(operador);
+                            break;
+
+                        }
+                        break;
+                    }
                 }
+
+                if (pilaOperadores->isEmpty() && operador != ')') {
+                    pilaOperadores->push(operador);
+                } 
+
+                cout << "Valor de Pila Operadores: ";
+                pilaOperadores->print();
+                cout << "\n";
+
+
+            }
+        }
+
+        while (!pilaOperadores->isEmpty()) {
+            cout << "\n" << "Valor de Pila Operadores FINAL: [ " << pilaOperadores->topValue() << " ]" << "\n";
+
+            if (pilaOperadores->topValue() == '(') {
+                pilaOperadores->pop();
+            }
+            else if (pilaOperadores->topValue() == ')') {
+                pilaOperadores->pop();
+            }
+            else {
+                double peo = operaciones(pilaOperadores->pop(), pilaNumeros->pop(), pilaNumeros->pop());
+                cout << peo;
+                pilaNumeros->push(peo);
             }
 
-            if (pilaOperadores->isEmpty()) {
-                pilaOperadores->push(operador);
-            } 
-
-            cout << "Valor de Pila Operadores: [ " << pilaOperadores->topValue() << " ]" << "\n";
-
         }
-    }
-
-    while (!pilaOperadores->isEmpty()) {
-        cout << "\n" << "Valor de Pila Operadores FINAL: [ " << pilaOperadores->topValue() << " ]" << "\n";
-
-        if (pilaOperadores->topValue() == '(') {
-            pilaOperadores->pop();
-        }
-        else if (pilaOperadores->topValue() == ')') {
-            pilaOperadores->pop();
-        }
-        else {
-            double peo = operaciones(pilaOperadores->pop(), pilaNumeros->pop(), pilaNumeros->pop());
-            cout << peo;
-            pilaNumeros->push(peo);
-        }
-
-    }
 
     }
     catch (...) {
